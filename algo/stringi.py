@@ -41,13 +41,14 @@ def search_rabinkarp(txt, pat):
 			= 65*base^2 % prime + 66*base^1 % prime + 67*base^0 % prime
 	'''
 	for i in range(m):
-		pat_hash += ord(pat[i]) * (base ** (m - 1 - i)) % prime
+		pat_hash += ord(pat[i]) * (base ** (m - 1 - i))
 
 	# Similarly compute the Hash Value for txt
 	for i in range(m):
-		txt_hash += ord(txt[i]) * (base ** (m - 1 - i)) % prime
+		txt_hash += ord(txt[i]) * (base ** (m - 1 - i))
 
 	for i in range(n - m + 1):
+		print(i, pat_hash, txt_hash)
 		if pat_hash == txt_hash: # If hash are same then 2 strings can be equal but need to check mannually
 
 			# Mannually check if 2 strings are same one char by one char
