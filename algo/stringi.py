@@ -48,7 +48,6 @@ def search_rabinkarp(txt, pat):
 		txt_hash += ord(txt[i]) * (base ** (m - 1 - i))
 
 	for i in range(n - m + 1):
-		print(i, pat_hash, txt_hash)
 		if pat_hash == txt_hash: # If hash are same then 2 strings can be equal but need to check mannually
 
 			# Mannually check if 2 strings are same one char by one char
@@ -95,36 +94,36 @@ def search_kmp(txt, pat):
 
 	lps = construct_lps(pat)
 
-	chosen_start = 0
-	j = 0
+	txt_ptr = 0
+	pat_ptr = 0
 
-	while chosen_start < n:
-		while j < m and txt[chosen_start + j] == pat[j]:
-			j += 1
-		if j == 0: # If mismatch happens at first character
-			chosen_start += 1 # Start 
-		elif j != m: # Mismatch happend at j 
-			# Shift the pattern by lps[i] and since the longest suffix will be prefix 
+	while txt_ptr < n - m + 1:
+		while pat_ptr < m and txt[txt_ptr] == pat[pat_ptr]:
+			pat_ptr += 1
+			txt_ptr += 1
+		if pat_ptr == 0: # If mismatch happens at first character
+			txt_ptr += 1  # Start 
+		elif pat_ptr != m: # Mismatch happend at j 
+			# Shift the pattern by lps[txt_ptr] and since the longest suffix will be prefix 
 			# there is no need to match those letters 
 			# instead start matching from lps[j - 1]
-			j = lps[j - 1] 
+			pat_ptr = lps[pat_ptr - 1] 
 		else: # match was there
-			output.append(chosen_start)
+			output.append(txt_ptr - m) # Store starting index of pattern in txt
+			pat_ptr = 0
 
 	return output
-
-
 
 
 def main():
 	txt = 'if whole pat isbreak overseved without break means we found pat as break substring'
 	pat = 'break'
 
-	txt = 'ABCXABCYABCXABCM'
-	pat = 'ABCXABCM'
+	# txt = 'ABCXABCYABCXABCM'
+	# pat = 'ABCXABCM'
 
 	# print(search_bf(txt, pat))
-	# print(search_rabinkarp(txt, pat))
+	print(search_rabinkarp(txt, pat))
 
 	print(search_kmp(txt, pat))
 
