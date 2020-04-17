@@ -73,18 +73,59 @@ def search_rabinkarp(txt, pat):
 		txt_hash = (66*base^1 + 67*base^0 + D) % prime
 		'''
 		if i != n - m: # dont include when we cant go further 
-			txt_hash = (txt_hash - (ord(txt[i]) * (base ** m - 1))) * base + ord(txt[i + m]) % prime 
+			txt_hash = (txt_hash - (ord(txt[i]) * (base ** (m - 1)))) * base + ord(txt[i + m]) % prime 
+
+	return output
+
+'''
+	LPS = []
+	LPS[i] => Length of longest prefix which is also suffix
+'''
+
+def search_kmp(txt, pat):
+
+	def construct_lps(pat):
+		return [0, 0, 0, 0, 1, 2, 3, 0]
+
+	n = len(txt)
+	m = len(pat)
+
+	output = []
+
+	lps = construct_lps(pat)
+
+	chosen_start = 0
+	j = 0
+
+	while chosen_start < n:
+		while j < m and txt[chosen_start + j] == pat[j]:
+			j += 1
+		if j == 0: # If mismatch happens at first character
+			chosen_start += 1 # Start 
+		elif j != m: # Mismatch happend at j 
+			# Shift the pattern by lps[i] and since the longest suffix will be prefix 
+			# there is no need to match those letters 
+			# instead start matching from lps[j - 1]
+			j = lps[j - 1] 
+		else: # match was there
+			output.append(chosen_start)
 
 	return output
 
 
+
+
 def main():
 	txt = 'if whole pat isbreak overseved without break means we found pat as break substring'
-	txt = 'ABCD'
-	pat = 'BCD'
+	pat = 'break'
 
-	print(search_bf(txt, pat))
-	print(search_rabinkarp(txt, pat))
+	txt = 'ABCXABCYABCXABCM'
+	pat = 'ABCXABCM'
+
+	# print(search_bf(txt, pat))
+	# print(search_rabinkarp(txt, pat))
+
+	print(search_kmp(txt, pat))
 
 if __name__ == '__main__':
 	main()
