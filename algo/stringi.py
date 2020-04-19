@@ -84,46 +84,67 @@ def search_rabinkarp(txt, pat):
 
 def search_kmp(txt, pat):
 
-	def construct_lps(pat):
-		return [0, 0, 0, 0, 1, 2, 3, 0]
+	def construct_lps(pat, m):
+		lps = [0] * m
+
+		longest_prefix_suffix_till_now = 0
+		lps[0] = 0
+
+		i = 1 
+		while i < m: # construct lps 1..m-1
+			if pat[i] == pat[longest_prefix_suffix_till_now]:
+				longest_prefix_suffix_till_now += 1
+				lps[i] = longest_prefix_suffix_till_now
+				i += 1
+			else:
+				if longest_prefix_suffix_till_now == 0:
+					lps[i] = 0
+					i += 1
+				else:
+					longest_prefix_suffix_till_now = lps[longest_prefix_suffix_till_now - 1]
+
+		return lps
 
 	n = len(txt)
 	m = len(pat)
 
 	output = []
 
-	lps = construct_lps(pat)
+	lps = construct_lps(pat, m)
+	print(lps)
 
 	txt_ptr = 0
 	pat_ptr = 0
 
-	while txt_ptr < n - m + 1:
-		while pat_ptr < m and txt[txt_ptr] == pat[pat_ptr]:
+	while txt_ptr < n:
+		if txt[txt_ptr] == pat[pat_ptr]:
 			pat_ptr += 1
 			txt_ptr += 1
-		if pat_ptr == 0: # If mismatch happens at first character
-			txt_ptr += 1  # Start 
-		elif pat_ptr != m: # Mismatch happend at j 
-			# Shift the pattern by lps[txt_ptr] and since the longest suffix will be prefix 
-			# there is no need to match those letters 
-			# instead start matching from lps[j - 1]
-			pat_ptr = lps[pat_ptr - 1] 
-		else: # match was there
-			output.append(txt_ptr - m) # Store starting index of pattern in txt
-			pat_ptr = 0
 
+		if pat_ptr == m:
+			output.append(txt_ptr - m) # Store starting index of pattern in txt
+			pat_ptr = lps[pat_ptr - 1]
+
+		elif txt_ptr < n and pat[pat_ptr] != txt[txt_ptr]:
+			if pat_ptr == 0: # If mismatch happens at first character
+				txt_ptr += 1  # Start 
+			else: # Mismatch happend at j 
+				# Shift the pattern by lps[txt_ptr] and since the longest suffix will be prefix 
+				# there is no need to match those letters 
+				# instead start matching from lps[j - 1]
+				pat_ptr = lps[pat_ptr - 1] 
 	return output
 
 
 def main():
-	txt = 'if whole pat isbreak overseved without break means we found pat as break substring'
-	pat = 'break'
+	txt = 'aaaaaaa'
+	pat = 'aa'
 
 	# txt = 'ABCXABCYABCXABCM'
 	# pat = 'ABCXABCM'
 
 	# print(search_bf(txt, pat))
-	print(search_rabinkarp(txt, pat))
+	# print(search_rabinkarp(txt, pat))
 
 	print(search_kmp(txt, pat))
 
