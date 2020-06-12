@@ -1,13 +1,19 @@
-def can_i(nums, start, k):
-	print(start, k)
-	if start == len(nums) and k == 0:
-		return True
-	if k < 0 or start == len(nums):
-		return False 
-	return can_i(nums, start + 1, k - nums[start]) or can_i(nums, start + 1, k)
+import math
 
-def main():
-	nums = [12, 1, 61, 5, 9, 2]
-	print(can_i(nums, 0, 64))
-if __name__ == '__main__':
-	main()
+def min_coins(n, denominations):
+    memo = [math.inf for _ in range(n + 1)]
+    memo[0] = 0
+    print(memo)
+    for v in range(1, n + 1):
+        for denomination in denominations:
+            if denomination > v:
+                continue
+            memo[v] = min(memo[v], memo[v - denomination] + 1)
+    print(memo)
+    return memo[n]
+
+denominations = [2, 1]
+n = 7
+
+
+print(min_coins(n, denominations))
